@@ -2,7 +2,7 @@ from PIL import Image, ImageFilter
 import sys
 
 sprite = Image.open(sys.argv[1]).convert('L')  # Convert to grayscale
-sprite = sprite.filter(ImageFilter.GaussianBlur(radius=1))  # Apply Gaussian Blur
+sprite = sprite.filter(ImageFilter.GaussianBlur(radius=int(sys.argv[2])))  # Apply Gaussian Blur
 
 width, height = sprite.size
 depth_map = Image.new('L', (width, height))
