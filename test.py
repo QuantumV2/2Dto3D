@@ -88,9 +88,7 @@ while running:
         frames.append(frame)
     
     frame_count -= 1
-    print(frame_count)
     #pygame.time.wait(1)
 
 pygame.quit()
-print(len(frames), frame_count)
 imageio.mimwrite(uri=pathlib.Path("animation.gif"), ims=frames, format="GIF-FI", duration=0.01, loop = 0)
