@@ -10,7 +10,7 @@ depth_map = Image.new('L', (width, height))
 for y in range(height):
     for x in range(width):
         pixel_value = sprite.getpixel((x, y))
-        depth_value = pixel_value  # Invert to make bright pixels higher
+        depth_value = pixel_value
         depth_map.putpixel((x, y), depth_value)
 
 depth_map.save('depth.png')
