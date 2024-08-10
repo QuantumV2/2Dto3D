@@ -15,7 +15,7 @@ sprite_width, sprite_height = sprite.get_size()
 screen = pygame.display.set_mode((sprite_width * 2, sprite_height * 2))
 fillinpixels = (sys.argv[3] == 'True') if len(sys.argv) > 3 else False
 
-@jit(target_backend='cuda')  
+@jit()  
 def rotate_point(x, y, z, angle, cx, cy, cz):
     # translate point to origin
     x -= cx
@@ -36,7 +36,7 @@ def rotate_point(x, y, z, angle, cx, cy, cz):
     return x_new, y, z_new
 
 depth_multi = int(sys.argv[4]) if len(sys.argv) > 4 else 5
-@jit(target_backend='cuda')  
+@jit()  
 def rotate_calc(depth_value_normal, x,y,angle,sprite_width,sprite_height):
     z = (depth_value_normal[0] + depth_value_normal[1] + depth_value_normal[2]) * depth_multi
     if(angle > 360):
@@ -46,7 +46,7 @@ def rotate_calc(depth_value_normal, x,y,angle,sprite_width,sprite_height):
     y_new = int(y_new + sprite_height // 2 - sprite_height // 2)
     return x_new, y_new, z_new
 
-@jit(target_backend='cuda')  
+@jit()  
 def loop_neighbors(x, y):
     nxy = []
     for dx in (-1, 0, 1):
@@ -68,7 +68,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill((128, 0, 128))
+    screen.fill((0, 0, 0))
     rotated_sprite = pygame.Surface((sprite_width, sprite_height), pygame.SRCALPHA)
 
 
@@ -86,7 +86,7 @@ while running:
         for y in range(sprite_height):
             for x in range(sprite_width):
                 # check transparency
-                if rotated_sprite.get_at((x, y)) == (0, 0, 0, 255):
+                if rotated_sprite.get_at((x, y)) == (128, 0, 128, 255):
                     nxy = loop_neighbors(x, y)
                     neighbors = [
                         rotated_sprite.get_at((nx, ny))
@@ -102,7 +102,7 @@ while running:
     screen.blit(rotated_sprite, (sprite_width // 2, sprite_height // 2), special_flags=pygame.BLEND_PREMULTIPLIED)
     angle += 1  # Increment angle for continuous rotation
     pygame.display.flip()
-    if(frame_count % 3 == 0 and frame_count > 0):
+    if(frame_count % 5 == 0 and frame_count > 0):
         frame = pygame.surfarray.array3d(screen)
         frame = frame.swapaxes(0, 1)  # swap axes to match imageio format
         frames.append(frame)
